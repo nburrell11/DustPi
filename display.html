@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<!--<meta http-equiv="refresh" content="0; url=index.php" />-->
+		<link rel="stylesheet" type="text/css" href="css/display.css"/>
+		<script src="js/display.js"></script>
+		<script src="js/chart.js"></script>
+		<title>Raspberry Pi Dust Sensor Network - Graph Generator</title>
+	</head>
+	<body onload="monIni();piIni()">
+		<div>
+			Select Raspberry Pi:
+			<select id="piSel">
+				<!--<option value="001_EastMesa">001_EastMesa</option>
+				<option value="Pi2">Pi 2</option>
+				<option value="Pi3">Pi 3</option>
+				<option value="Pi4">Pi 4</option>
+				<option value="Pi5">Pi 5</option>-->
+			</select>
+			
+			<div id="moni">
+				<input type="button" value="<" onclick="monChange('prev')"/>
+				<label id="mon"></label><label id="year"></label>
+				<input type="button" value=">" onclick="monChange('next')"/>
+			</div>
+			<div class="tbl">
+				<table id="cal">
+					<tr>
+						<th>S</th>
+						<th>M</th>
+						<th>T</th>
+						<th>W</th>
+						<th>Th</th>
+						<th>F</th>
+						<th>S</th>
+					</tr>
+				</table>			
+			</div>
+			<label id="date"></label>
+			<br/>
+			Start:<label id="start"></label>
+			<br/>
+			End:<label id="end"></label>
+			<br/>
+			<input type="button" class="btn" value="Set Start Date" id="st" onclick="monSet(this)"/>
+			<input type="button" class="btn" value="Set End Date" id="en" onclick="monSet(this)"/>
+			<br/>
+			<!--<input type="button" class="btn" value="Test Upload" id="en" onclick="upl()"/>-->
+			<input type="button" class="btn" value="Generate Chart" onclick="dwn()"/>
+		</div>
+		<div>
+			<canvas id="chart"></canvas>
+		</div>
+	</body>	
+</html>
