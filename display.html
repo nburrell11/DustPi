@@ -8,7 +8,7 @@
 		<title>Raspberry Pi Dust Sensor Network - Graph Generator</title>
 	</head>
 	<body onload="monIni();piIni()">
-		<div>
+		<div id="user">
 			Select Raspberry Pi:
 			<select id="piSel">
 				<!--<option value="001_EastMesa">001_EastMesa</option>
@@ -48,8 +48,8 @@
 			<!--<input type="button" class="btn" value="Test Upload" id="en" onclick="upl()"/>-->
 			<input type="button" class="btn" value="Generate Chart" onclick="dwn()"/>
 		</div>
-		<div>
-			<canvas id="chart"></canvas>
+		<div id="chrt">
+			<canvas height="750" width="750" id="chart"></canvas>
 		</div>
 	</body>	
 </html>

@@ -1,3 +1,14 @@
+#user
+{
+	float:left;
+	width:35%;
+}
+#chrt
+{
+	float:right;
+	width:55%;
+}
+
 .btn.sq
 {
 	width:10vw;

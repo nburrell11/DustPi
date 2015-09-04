@@ -106,12 +106,14 @@ function dwn()
 			tbl.style.borderCollapse = "collapse";
 			
 			var time = [];
-			var dust = []
+			var dust = [];
+			var ustrt = rows[0].split(",")[1];
 			for (var i = 0; i<rows.length; i++)
 			{
 				var row = tbl.insertRow(tbl.rows.length);
 				var tmp = rows[i].split(",");
-				time.push(tmp[1]);
+				if (i%(rows.length/10)==0){time.push(tmp[1]-ustrt);}
+				else{time.push("");}
 				dust.push(tmp[3]);
 				for (var j=0; j<tmp.length; j++)
 				{
