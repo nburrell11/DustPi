@@ -213,8 +213,8 @@ function monTable(first)
 		{
 			cell = row.insertCell(c);
 			cell.innerHTML = "";
-			cell.style.borderWidth = "0px 0px 2px 0px";
-			if (c == day-1){cell.style.borderWidth = "0px 2px 2px 0px";}
+			cell.style.borderWidth = "0px 0px 0.2vw 0px";
+			if (c == day-1){cell.style.borderWidth = "0px 0.2vw 0.2vw 0px";}
 			c++;
 		}while(c<day)
 	}
@@ -285,12 +285,30 @@ function monTable(first)
 		if (d!= days+1){d++;}
 	}while (c<7 || d<(days+1))		
 		
-	monResize();
+	//monResize();
 	
 }
 
 function monResize()
 {
+	var div = document.getElementById("tbl");
+	var tbl = document.getElementById("cal");
+	
+	var w = div.offsetWidth;
+	var h = div.offsetHeight;
+	
+	tbl.style.width = w.toString() + "px";
+	tbl.style.height = h.toString() + "px";
+	rows = tbl.children[0].children;
+	for (var i=0; i<rows.length; i++)
+	{
+		var cells = rows[i].children;
+		for (var j=0; j<cells.length; j++)
+		{
+			cells[j].style.width = (w/6.5).toString() + "px";
+			cells[j].style.width = (h/6.5).toString() + "px";
+		}
+	}
 }
 
 function monChange(dir)
@@ -464,7 +482,14 @@ function line(data,options)
 		//Boolean - Whether grid lines are shown across the chart
 		scaleShowGridLines : true,
 		
+		//Boolean - Whether to show a dot for each point
+		pointDot : false,	
 		
+		 // Boolean - whether or not the chart should be responsive and resize when the browser does.
+		responsive: true,
+		
+		// Boolean - Determines whether to draw tooltips on the canvas or not
+		showTooltips: false,
 		
 		//String - Colour of the grid lines
 		scaleGridLineColor : "rgba(0,0,0,.05)",
