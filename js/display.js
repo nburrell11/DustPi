@@ -32,7 +32,7 @@ function piIni()
 	}
 }
 //Download Data (case 'd')
-function dwn()
+function dwn(obj)
 {
 	if (document.getElementById("res"))
 	{
@@ -41,13 +41,38 @@ function dwn()
 	var sqltbl = document.getElementById("piSel").value;
 	var start  = document.getElementById("start").innerHTML;
 	var end    = document.getElementById("end").innerHTML;
+	var stime  = document.getElementById("stime").innerHTML;
+	var etime  = document.getElementById("etime").innerHTML;
 	
+	if ((start == "") && (end == ""))
+	{
+		var now = new Date();
+		start = (now.getMonth()+1).toString() + "/" + now.getDate.toString() + "/" + now.getFullYear.toString();
+		end = start;
+	}
+	else if ((start == "") || (end == ""))
+	{
+		start = start || end;
+		end = start;
+	}
+	
+	if ((stime == "") && (etime == ""))
+	{
+		var now = new Date();
+		stime = "00:00:00";
+		etime = "23:59:59";
+	}
+	else if ((stime == "") || (etime == ""))
+	{
+		stime = stime || etime;
+		etime = stime;
+	}
 	
 	var req = new XMLHttpRequest();
 	
 	// Create some variables we need to send to our PHP file
 	var url = "dat.php";
-	var vars = "req=d&tbl=" + sqltbl + "&st=" + start + "&en=" + end;
+	var vars = "req=d&tbl=" + sqltbl + "&st=" + start + "&en=" + end + "&ts=" + stime + "&te=" + etime;
 	req.open("POST", url, true);
 	req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
 	req.send(vars);
@@ -72,60 +97,74 @@ function dwn()
 				popup("iderror");
 				return;
 			}
-			var div = document.createElement("div");
-			div.id = "res";
-			
-			var tbl = document.createElement("table");			
-			tbl.insertRow(0);
-			hdr = tbl.rows[0];
-			
-			var th = document.createElement("th");
-			th.innerHTML = "Date";
-			th.style.border = "1px solid black";
-			hdr.appendChild(th);
-			
-			var th = document.createElement("th");
-			th.innerHTML = "UNIX Time";
-			th.style.border = "1px solid black";
-			hdr.appendChild(th);
-			
-			var th = document.createElement("th");
-			th.innerHTML = "Local Time";
-			th.style.border = "1px solid black";
-			hdr.appendChild(th);
-			
-			var th = document.createElement("th");
-			th.innerHTML = "Dust Reading";
-			th.style.border = "1px solid black";
-			hdr.appendChild(th);
-			
+			if (obj.id == "tab")
+			{
+				var div = document.createElement("div");
+				div.id = "res";
+				
+				var tbl = document.createElement("table");			
+				tbl.insertRow(0);
+				hdr = tbl.rows[0];
+				
+				var th = document.createElement("th");
+				th.innerHTML = "Date";
+				th.style.border = "1px solid black";
+				hdr.appendChild(th);
+				
+				var th = document.createElement("th");
+				th.innerHTML = "UNIX Time";
+				th.style.border = "1px solid black";
+				hdr.appendChild(th);
+				
+				var th = document.createElement("th");
+				th.innerHTML = "Local Time";
+				th.style.border = "1px solid black";
+				hdr.appendChild(th);
+				
+				var th = document.createElement("th");
+				th.innerHTML = "Dust Reading";
+				th.style.border = "1px solid black";
+				hdr.appendChild(th);
+							
+				tbl.style.border = "1px solid black";
+				tbl.style.borderCollapse = "collapse";
+			}
 			var rows = dat.split("\n");
 			rows.pop();
-			alert(rows.length);
-			tbl.style.border = "1px solid black";
-			tbl.style.borderCollapse = "collapse";
+			//alert(rows.length);
+			
 			
 			var time = [];
 			var dust = [];
 			var ustrt = rows[0].split(",")[1];
 			for (var i = 0; i<rows.length; i++)
 			{
-				var row = tbl.insertRow(tbl.rows.length);
 				var tmp = rows[i].split(",");
-				if (i%(rows.length/10)==0){time.push(tmp[1]-ustrt);}
-				else{time.push("");}
-				dust.push(tmp[3]);
-				for (var j=0; j<tmp.length; j++)
+				if (obj.id == "tab")
 				{
-					var cell = row.insertCell(j);
-					cell.innerHTML = tmp[j];
-					cell.style.border = "1px solid black";
+					var row = tbl.insertRow(tbl.rows.length);
+					for (var j=0; j<tmp.length; j++)
+					{
+						var cell = row.insertCell(j);
+						cell.innerHTML = tmp[j];
+						cell.style.border = "1px solid black";
+					}
+					
+				}
+				else
+				{
+					if (i%(parseInt(rows.length/10)+1)==0){time.push(tmp[2].slice(0,5));}
+					//if (i%(parseInt(rows.length/10))==0){time.push(tmp[1]-ustrt);}
+					else{time.push("");}
+					dust.push(tmp[3]);
 				}
 			}
 			
-			div.appendChild(tbl);
-			
-			document.body.appendChild(div);
+			if (obj.id == "tab")
+			{
+				div.appendChild(tbl);			
+				document.body.appendChild(div);
+			}
 			//alert(dat);
 			
 			genChart(time,dust);
@@ -161,6 +200,96 @@ function upl()
 		}
 	}
 }
+
+
+function popup(pos)
+{
+	var pops = document.getElementsByClassName("tooltip");
+	if (pops.length != 0)
+	{
+		for (var i=0; i<pops.length; i++)
+		{
+			document.body.removeChild(pops[i]);
+			i--;
+		}
+	}
+	
+	
+	var div = document.createElement("div");
+	div.style.position = "fixed";
+	div.style.left= pos[0] + "px";
+	div.style.top = pos[1] + "px";
+	div.style.backgroundColor = "white";
+	div.className = "tooltip";
+	div.style.width = "10%";
+	
+	var lbl = document.createElement("label");
+	lbl.innerHTML = "Please Select Time: ";
+	
+	div.appendChild(lbl);
+	
+	var hr = document.createElement("select");
+	hr.id = "hour";
+	hr.width = "50%";
+	for (var i=0; i<24; i++)
+	{
+		var hropt = document.createElement("option");
+		var temp = "";
+		temp = i.toString();
+		if (i<10){temp = "0" + i.toString()}
+		hropt.value = temp;
+		hropt.innerHTML = temp;
+		hr.appendChild(hropt);
+	}
+	/*
+	hr.onchange = function()
+	{
+		var hour = document.getElementById("hr");
+		hour.innerHTML = this.options[this.selectedIndex].value;
+	}
+	*/
+	div.appendChild(hr);
+	
+	var mn = document.createElement("select");
+	mn.id = "minute";
+	for (var i=0; i<4; i++)
+	{
+		var mnopt = document.createElement("option");
+		var temp = "";
+		temp = (i*15).toString();
+		if (i==0){temp = "0" + (i*15).toString()}
+		mnopt.value = temp;
+		mnopt.innerHTML = temp;
+		mn.appendChild(mnopt);
+	}
+	/*
+	mn.onchange = function()
+	{
+		var min = document.getElementById("mn");
+		min.innerHTML = this.options[this.selectedIndex].value;
+	}
+	*/	
+	div.appendChild(mn);
+	
+	var btn = document.createElement("input");
+	btn.type = "button";
+	btn.value = "OK";
+	btn.onclick = function ()
+		{
+			var min = document.getElementById("minute");
+			var mn = document.getElementById("mn");
+			mn.innerHTML = min.options[min.selectedIndex].value;
+			var hour = document.getElementById("hour");
+			var hr = document.getElementById("hr");
+			hr.innerHTML = hour.options[hour.selectedIndex].value;
+			document.body.removeChild(this.parentElement);
+		};
+	div.appendChild(btn);
+	
+	
+	document.body.appendChild(div);
+}
+
 
 var mon;
 var first = new Date();
@@ -202,6 +331,8 @@ function monTable(first)
 			tbl.deleteRow(-1);
 		}while (tbl.rows.length>1)
 	}
+	var x = 0;
+	var y = 0;
 	//insert first row
 	row = tbl.insertRow(-1);
 	//find first of month
@@ -279,7 +410,16 @@ function monTable(first)
 					if (date < 10){date = "0" + date;}
 					
 					document.getElementById("date").innerHTML = year.toString() + "/" + month + "/" + date;
+					
+					var rect = this.getBoundingClientRect();
+					x = rect.right;
+					y = rect.top  + (this.offsetHeight/3);
+					popup([x,y],"time");
+					//alert(x.toString().concat(",",y));
 				};
+				
+			
+			
 		}					
 		c++;
 		if (d!= days+1){d++;}
@@ -325,17 +465,23 @@ function monSet(mon)
 {
 	var date = document.getElementById("date");
 	var set = date.innerHTML;
-	date.innerHTML = "";
+	
+	var time = document.getElementById("hr").innerHTML + ":" + document.getElementById("mn").innerHTML;
+	//date.innerHTML = "";
 	
 	switch(mon.id)
 	{
 		case "st":
 			document.getElementById("start").innerHTML = set;
+			document.getElementById("stime").innerHTML = time + ":00";
 			set = "";
+			time = "";
 			break;
 		case "en":
 			document.getElementById("end").innerHTML = set;
+			document.getElementById("etime").innerHTML = time + ":00";
 			set = "";
+			time = "";
 			break;
 	}
 	
@@ -419,9 +565,9 @@ function genChart(x,y)
 		datasets:
 		[
 			{
-				fillColor: "rgba(220,220,220,0.2)",
-				strokeColor: "rgba(220,220,220,1)",
-				pointColor: "rgba(220,220,220,1)",
+				fillColor: "rgba(255,0,0,0.2)",
+				strokeColor: "rgba(255,0,0,1)",
+				pointColor: "rgba(255,0,0,1)",
 				pointStrokeColor: "#fff",
 				pointHighlightFill: "#fff",
 				pointHighlightStroke: "rgba(220,220,220,1)",
@@ -510,7 +656,7 @@ function line(data,options)
 		bezierCurveTension : 0.4,
 
 		//Boolean - Whether to show a dot for each point
-		pointDot : true,
+		//pointDot : true,
 
 		//Number - Radius of each point dot in pixels
 		pointDotRadius : 4,

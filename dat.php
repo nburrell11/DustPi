@@ -1,6 +1,6 @@
 <?php
 	
-	$servername = "localhost";
+	$servername = "";
 	$username = "";
 	$password = '';
 	$db = "";	
@@ -27,8 +27,11 @@
 		case "d":
 			$str = $_POST["st"];
 			$end = $_POST["en"];
+			$ts = $_POST["ts"];
+			$te = $_POST["te"];
 			$sql = "SELECT * FROM " . $tbl;
-			$sql .= " WHERE date BETWEEN '" . $str . "' AND '" . $end . "'";
+			$sql .= " WHERE (date BETWEEN '" . $str . "' AND '" . $end . "')"; 
+			$sql .= " AND (local BETWEEN '" . $ts . "' AND '" . $te . "')";
 			$sql .= " ORDER BY UNIX ASC";
 			$result = mysqli_query($conn, $sql);
 			
@@ -103,30 +106,6 @@
 				}
 			}
 			break;
-			
-		case "t":
-			$sql = "SHOW TABLES;";
-			$result = mysqli_query($conn, $sql);
-			
-			if (mysqli_num_rows($result) > 0) 
-			{
-				// output data of each row
-				while($row = mysqli_fetch_row($result)) 
-				{
-					for ($i=0;$i<count($row);$i++)
-					{
-						echo $row[$i];
-						if ($i != count($row)-1){echo ",";}
-					}
-					echo "\n";
-				}
-			} 
-			else 
-			{
-				echo "0 results";
-			}
-			break;
-			
 		case "t":
 			$sql = "SHOW TABLES;";
 			$result = mysqli_query($conn, $sql);
