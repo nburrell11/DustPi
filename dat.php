@@ -29,10 +29,15 @@
 			$end = $_POST["en"];
 			$ts = $_POST["ts"];
 			$te = $_POST["te"];
+			//SELECT CAST(CONCAT(CAST(date AS CHAR(10)),' ',
+			//CAST(local AS CHAR(8))) AS DATETIME) FROM tbl
 			$sql = "SELECT * FROM " . $tbl;
-			$sql .= " WHERE (date BETWEEN '" . $str . "' AND '" . $end . "')"; 
-			$sql .= " AND (local BETWEEN '" . $ts . "' AND '" . $te . "')";
+			$sql .= " WHERE CAST(CONCAT(CAST(date AS CHAR(10)),' '";
+			$sql .= ",CAST(local AS CHAR(8))) AS DATETIME)";
+			$sql .= "BETWEEN '" . $str . " " . $ts . "' AND";
+			$sql .= "'" . $end . " " . $te . "'";
 			$sql .= " ORDER BY UNIX ASC";
+			
 			$result = mysqli_query($conn, $sql);
 			
 			if (mysqli_num_rows($result) > 0) 

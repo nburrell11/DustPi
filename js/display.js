@@ -85,16 +85,9 @@ function dwn(obj)
 		{
 			var dat = req.responseText;
 			//document.getElementById("status").innerHTML = dat;
-			if (dat == "Error" && quer == "driver" && name == -1)
+			if (dat == "0 results")
 			{
-				popup("iderror");
-				return;
-			}
-			if (dat == "Error" && quer == "driver" && !(name == -1))
-			{
-				//Implement Adding driver (since they typed a name with a space)
-				//Ask driver if their name is correct to confirm creation
-				popup("iderror");
+				alert("No Results");
 				return;
 			}
 			if (obj.id == "tab")
@@ -373,6 +366,11 @@ function monTable(first)
 			if (date < 10){date = "0" + date;}
 			
 			document.getElementById("date").innerHTML = year.toString() + "/" + month + "/" + date;
+			
+			var rect = this.getBoundingClientRect();
+			x = rect.right;
+			y = rect.top  + (this.offsetHeight/3);
+			popup([x,y],"time");
 		};
 	
 	//fill rest of month
@@ -682,7 +680,7 @@ function line(data,options)
 	}
 	var myLineChart = new Chart(ctx).Line(data, options);
 	legend = myLineChart.generateLegend();
-	document.getElementById('legend').innerHTML = legend;
+	//document.getElementById('legend').innerHTML = legend;
 	curr_chart = myLineChart;
 }
 function bar(data,options)
@@ -834,7 +832,7 @@ function pie(data,options)
 	}
 	var myPieChart = new Chart(ctx).Pie(data, options);
 	legend =  myPieChart.generateLegend();
-	document.getElementById('legend').innerHTML = legend;
+	//document.getElementById('legend').innerHTML = legend;
 	curr_chart = myPieChart;
 }
 function radar(data,options)
