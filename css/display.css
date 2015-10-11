@@ -19,6 +19,31 @@ html, body
 	height: 97%;
 }
 
+#start, #end
+{
+	text-decoration:underline;
+	color:green;
+}
+
+.pop
+{
+	padding: 1%;
+	
+	background-image: -webkit-linear-gradient(top, #ffffff, #BDBDBD);
+	background-image: -moz-linear-gradient(top, #ffffff, #BDBDBD);
+	background-image: -ms-linear-gradient(top, #ffffff, #BDBDBD);
+	background-image: -o-linear-gradient(top, #ffffff, #BDBDBD);
+	background-image: linear-gradient(to bottom, #ffffff, #BDBDBD);
+	
+	-webkit-border-radius: 10;
+	-moz-border-radius: 10;
+	border-radius: 10px;
+	
+	-webkit-box-shadow: 0px 1px 3px #656565;
+	-moz-box-shadow: 0px 1px 3px #656565;
+	box-shadow: 0px 1px 3px #656565;
+}
+
 .btn.sq
 {
 	width:10vw;

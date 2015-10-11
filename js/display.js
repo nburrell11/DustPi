@@ -1,6 +1,19 @@
 //Initialize Select (case 't')
 function piIni()
 {
+	var now = new Date();
+	var m = now.getMonth() + 1;
+	var d = now.getDate();
+	var y = now.getFullYear();
+	if (m<10){m = "0" + m.toString();}
+	
+	document.getElementById("start").innerHTML = y.toString() + "/" + m.toString() + "/" + d.toString();
+	document.getElementById("stime").innerHTML = "00:00";
+	document.getElementById("end").innerHTML = y.toString() + "/" + m.toString() + "/" + d.toString();
+	document.getElementById("etime").innerHTML = "23:59";
+	document.getElementById("etime").innerHTML = "23:59";
+	
+	
 	var sel = document.getElementById("piSel");
 	
 	var req = new XMLHttpRequest();
@@ -287,19 +300,98 @@ function popup(pos)
 var mon;
 var first = new Date();
 var year;
+var obj;
 
-function monIni()
+function monIni(dt)
 {
-	var now = new Date();
-	mon = now.getMonth();
-	var date = now.getDate();
-	var day = now.getDay();
-	year = now.getFullYear();
+	var rect = dt.getBoundingClientRect();
+	var x = rect.right;
+	var y = rect.top  + (dt.offsetHeight);
+	
+	obj = dt;
+	
+	dt = dt.innerHTML.split("/");
+	
+	mon = Number(dt[1])-1;
+	year = dt[0];
 	
 	first.setFullYear(year,mon,1);
 	
 	//alert((date - first.getDate())%7);
 	//alert(first.getDay());
+	
+	var cont = document.createElement("div");
+	//set x
+	cont.style.left = x + "px";
+	//set y
+	cont.style.top = y + "px";
+	cont.style.position = "absolute";
+	cont.className = "pop";
+	cont.onblur = function (){document.body.removeChild(this);};
+	
+	var close = document.createElement("label");
+	close.innerHTML = "X";
+	close.style.fontSize = "0.75em";
+	close.style.position = "absolute";
+	close.style.top = "1%";
+	close.style.left = "95%";
+	close.style.color = "grey";
+	close.onclick = function (){document.body.removeChild(this.parentNode);};
+	cont.appendChild(close);
+	//cont.appendChild(document.createElement("br"));
+	
+	var moni = document.createElement("div");
+	moni.style.textAlign = "center";
+	
+	var left = document.createElement("input");
+	left.type = "button";
+	left.onclick = function(){monChange('prev');};
+	left.value = "<";
+	left.style.float = "left";
+	
+	var right = document.createElement("input");
+	right.type = "button";
+	right.onclick = function(){monChange('next');};
+	right.value = ">";
+	right.style.float = "right";
+	
+	var monl = document.createElement("label");
+	monl.id = "mon";
+	
+	var yrl = document.createElement("label");
+	yrl.id = "year";
+	
+	moni.appendChild(left);
+	moni.appendChild(monl);
+	moni.appendChild(yrl);
+	moni.appendChild(right);
+	
+	cont.appendChild(moni);
+	
+	var div = document.createElement("div");
+	div.id = "tbl";
+	div.className = "tbl";
+	
+	var cal = document.createElement("table");
+	cal.id = "cal";
+	
+	var row = document.createElement("tr");
+	var dz = ["S","M","T","W","Th","F","S"];
+	for (var i=0; i<dz.length; i++)
+	{
+		var th = document.createElement("th");
+		th.innerHTML = dz[i];
+		row.appendChild(th);
+	}
+	
+	cal.appendChild(row);
+	div.appendChild(cal);
+	
+	cont.appendChild(div);
+	
+	document.body.appendChild(cont);
+	cont.focus();
+	
 	monTable(first);
 	
 }
@@ -361,16 +453,13 @@ function monTable(first)
 			this.style.color = "blue";
 			
 			var month = (mon+1).toString();
-			if (mon < 10){month = "0" + month;}
+			if (Number(month) < 10){month = "0" + month;}
 			var date = this.innerHTML.toString();					
-			if (date < 10){date = "0" + date;}
+			if (Number(date) < 10){date = "0" + date;}
 			
-			document.getElementById("date").innerHTML = year.toString() + "/" + month + "/" + date;
+			obj.innerHTML = year.toString() + "/" + month + "/" + date;
 			
-			var rect = this.getBoundingClientRect();
-			x = rect.right;
-			y = rect.top  + (this.offsetHeight/3);
-			popup([x,y],"time");
+			document.body.removeChild(this.parentNode.parentNode.parentNode.parentNode);			
 		};
 	
 	//fill rest of month
@@ -403,17 +492,13 @@ function monTable(first)
 					this.style.color = "blue";
 					
 					var month = (mon+1).toString();
-					if (mon < 10){month = "0" + month;}
+					if (Number(month) < 10){month = "0" + month;}
 					var date = this.innerHTML.toString();					
-					if (date < 10){date = "0" + date;}
+					if (Number(date) < 10){date = "0" + date;}
 					
-					document.getElementById("date").innerHTML = year.toString() + "/" + month + "/" + date;
+					obj.innerHTML = year.toString() + "/" + month + "/" + date;
 					
-					var rect = this.getBoundingClientRect();
-					x = rect.right;
-					y = rect.top  + (this.offsetHeight/3);
-					popup([x,y],"time");
-					//alert(x.toString().concat(",",y));
+					document.body.removeChild(this.parentNode.parentNode.parentNode.parentNode);
 				};
 				
 			
@@ -623,12 +708,12 @@ function line(data,options)
 	if (test)
 	{
 		options={
+		//Boolean - Whether to animate
+		animation: false,
+		
 		//Boolean - Whether grid lines are shown across the chart
-		scaleShowGridLines : true,
-		
-		//Boolean - Whether to show a dot for each point
-		pointDot : false,	
-		
+		scaleShowGridLines : false,
+				
 		 // Boolean - whether or not the chart should be responsive and resize when the browser does.
 		responsive: true,
 		
@@ -642,10 +727,10 @@ function line(data,options)
 		scaleGridLineWidth : 1,
 
 		//Boolean - Whether to show horizontal lines (except X axis)
-		scaleShowHorizontalLines: true,
+		scaleShowHorizontalLines: false,
 
 		//Boolean - Whether to show vertical lines (except Y axis)
-		scaleShowVerticalLines: true,
+		scaleShowVerticalLines: false,
 
 		//Boolean - Whether the line is curved between points
 		bezierCurve : true,
@@ -654,7 +739,7 @@ function line(data,options)
 		bezierCurveTension : 0.4,
 
 		//Boolean - Whether to show a dot for each point
-		//pointDot : true,
+		pointDot : false,
 
 		//Number - Radius of each point dot in pixels
 		pointDotRadius : 4,
